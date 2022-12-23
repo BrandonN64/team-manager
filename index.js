@@ -12,7 +12,7 @@ const htmlHead =
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employees</title>
+    <title>Team Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -75,18 +75,18 @@ const doQuestions = () => {
                 return answeredQuestions.employeeType === "Intern";
             }
         }
-    ]).then((answeredQuestions) => {
-        const { name, id, email, employeeType } = answeredQuestions;
+    ]).then((answer) => {
+        const { name, id, email, employeeType } = answer;
         let employee;
         switch(employeeType){
             case "Manager":
-                employee = new Manager(name, id, email, answeredQuestions.officeNumber);
+                employee = new Manager(name, id, email, answer.officeNumber);
                 break;
             case "Engineer":
-                employee = new Engineer(name, id, email, answeredQuestions.github);
+                employee = new Engineer(name, id, email, answer.github);
                 break;
             case "Intern":
-                employee = new Intern(name, id, email, answeredQuestions.school);
+                employee = new Intern(name, id, email, answer.school);
                 break;
         }
         createHTML(employee);
