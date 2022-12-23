@@ -5,30 +5,7 @@ const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 
-const htmlHead = 
-`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <header class="p-5 bg-info text-white text-center">
-        <h1>Team Members</h1>
-    </header>
-    <main class="row">\n`;
-const htmlFoot =
-`    </main>
-    
-</body>
-</html>`;
-
-let body = ``;
-
-const doQuestions = () => {
+const questions = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -55,30 +32,30 @@ const doQuestions = () => {
             type: "number",
             name: "officeNumber",
             message: "What is the office number of the employee?",
-            when(answeredQuestions) {
-                return answeredQuestions.employeeType === "Manager";
+            when(answers) {
+                return answers.employeePosition === "Manager";
             }
         },
         {
             type: "input",
             name: "github",
             message: "What is their your github username?",
-            when(answeredQuestions) {
-                return answeredQuestions.employeeType === "Engineer";
+            when(answers) {
+                return answers.employeePosition === "Engineer";
             }
         },
         {
             type: "input",
             name: "school",
             message: "What is the name of the school you attend?",
-            when(answeredQuestions) {
-                return answeredQuestions.employeeType === "Intern";
+            when(answers) {
+                return answers.employeePosition === "Intern";
             }
         }
     ]).then((answer) => {
-        const { name, id, email, employeeType } = answer;
+        const { name, id, email, employeePosition } = answer;
         let employee;
-        switch(employeeType){
+        switch(employeePosition){
             case "Manager":
                 employee = new Manager(name, id, email, answer.officeNumber);
                 break;
@@ -90,10 +67,10 @@ const doQuestions = () => {
                 break;
         }
         createHTML(employee);
-        anoterPersonCreation();
+        anotherPersonCreation();
     });
 }
-const anoterPersonCreation = () => {
+const anotherPersonCreation = () => {
     inquirer.prompt([
         {
             type: "confirm",
@@ -102,7 +79,7 @@ const anoterPersonCreation = () => {
         }
     ]).then((answer) => {
         if (answer.continue) {
-            doQuestions();
+            questions();
         } else {
             createFile();
         }
@@ -139,9 +116,32 @@ const createCard = (name, role, row1, row2, row3) => {
 </div>\n`;
     return employeeInformationDiv; 
 }
+
+const htmlHead = 
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="p-5 bg-info text-white text-center">
+        <h1>Team Members</h1>
+    </header>
+    <main class="row">\n`;
+const htmlFoot =
+`    </main>
+    
+</body>
+</html>`;
+let body = ``;
+
 const createFile = () => {
     const output = htmlHead + body + htmlFoot;
     fs.writeFile("./dist/index.html", output, (error) => 
-    error ? console.error(error) : console.log("sucess"));
+    error ? console.error(error) : console.log("Success"));
 }
-doQuestions();
+questions();
